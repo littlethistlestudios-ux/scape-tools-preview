@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Scape Material Library</title>
+<link rel="icon" href="data:,">
+</head>
+<body>
+<style>
+:root{
+  --bg:#f3f5f3; --panel:#ffffff; --ink:#1b231e; --muted:#5d6a62; --line:#d7dfd9; --line-strong:#b9c5bd;
+  --accent:#2e7d32; --accent-ink:#ffffff; --soft:#e7f0e8; --chip:#eef3ef;
+  --warn:#8a4b00; --warn-bg:#fff3df; --ok:#2e7d32;
+  --viewport:#1e2321; --hud:#0f1311cc; --hud-ink:#e8ede9;
+  --radius:12px; --radius-s:8px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131715; --panel:#1b211d; --ink:#e6ebe7; --muted:#98a69c; --line:#2a332d; --line-strong:#3a463e;
+    --accent:#6fc173; --accent-ink:#0c1a0e; --soft:#1f2c22; --chip:#222b25;
+    --warn:#f2b45c; --warn-bg:#2b2416; --ok:#6fc173;
+    --viewport:#0f1311; --hud:#0a0d0bd9; --hud-ink:#e8ede9;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131715; --panel:#1b211d; --ink:#e6ebe7; --muted:#98a69c; --line:#2a332d; --line-strong:#3a463e;
+  --accent:#6fc173; --accent-ink:#0c1a0e; --soft:#1f2c22; --chip:#222b25;
+  --warn:#f2b45c; --warn-bg:#2b2416; --ok:#6fc173;
+  --viewport:#0f1311; --hud:#0a0d0bd9; --hud-ink:#e8ede9;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Avenir Next","Avenir",Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding-block:18px 32px;padding-inline:16px;display:flex;flex-direction:column;gap:14px}
+header.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 18px}
+header h1{font-size:19px;font-weight:600;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+header h1 .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 0 3px var(--soft)}
+header .spec{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:11.5px;letter-spacing:.03em;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--muted);border:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:start}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
+.stick{position:sticky;top:12px}
+@media (max-width:860px){.stick{position:static}}
+
+/* viewport */
+.view{position:relative;background:var(--viewport);border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;min-height:320px;max-width:100%;border:1px solid var(--line)}
+@media (max-width:860px){.view{aspect-ratio:1/1}}
+.view canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.view canvas:active{cursor:grabbing}
+.hud{position:absolute;left:10px;right:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;pointer-events:none}
+.hud>*{pointer-events:auto}
+.seg{display:inline-flex;background:var(--hud);border-radius:999px;padding:3px;gap:2px;backdrop-filter:blur(6px)}
+.seg button{appearance:none;border:0;background:transparent;color:var(--hud-ink);font:inherit;font-size:12.5px;padding:5px 12px;border-radius:999px;cursor:pointer;opacity:.75}
+.seg button:hover{opacity:1}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);opacity:1;font-weight:600}
+.hud .right{display:inline-flex;gap:8px;flex-wrap:wrap}
+.ghost{appearance:none;border:0;background:var(--hud);color:var(--hud-ink);font:inherit;font-size:12.5px;padding:8px 12px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px)}
+.ghost[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.badge{position:absolute;left:10px;top:10px;background:var(--hud);color:var(--hud-ink);padding:7px 12px;border-radius:999px;font-size:12.5px;display:flex;gap:8px;align-items:center;backdrop-filter:blur(6px);max-width:calc(100% - 20px)}
+.badge b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge .tag{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#c9d6cc;border:1px solid #ffffff33;border-radius:999px;padding:1px 7px;flex:none}
+.status{position:absolute;right:10px;top:10px;background:var(--hud);color:var(--hud-ink);padding:7px 12px;border-radius:999px;font-size:12.5px;backdrop-filter:blur(6px);max-width:60%}
+.dropveil{position:absolute;inset:0;background:#2e7d32cc;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;border:3px dashed #ffffffaa;border-radius:var(--radius);pointer-events:none}
+.legend{color:var(--muted);font-size:12.5px;margin:8px 2px 0;line-height:1.5}
+
+/* panel */
+.panel{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.card h2{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card h2 .btn{text-transform:none;letter-spacing:0;font-weight:500}
+.drop{display:block;border:1.5px dashed var(--line-strong);border-radius:var(--radius-s);padding:16px 12px;text-align:center;cursor:pointer;color:var(--muted);transition:background .15s,border-color .15s}
+.drop:hover,.drop.over{background:var(--soft);border-color:var(--accent);color:var(--ink)}
+.drop strong{color:var(--ink);font-weight:600}
+.drop input{display:none}
+.drop code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.slots{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.slot{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;font-size:12.5px;padding:7px 9px;border-radius:var(--radius-s);background:var(--chip)}
+.slot .sw{width:22px;height:22px;border-radius:5px;background:var(--line);border:1px solid var(--line-strong);overflow:hidden}
+.slot .sw canvas{width:100%;height:100%;display:block}
+.slot .lbl{min-width:0}
+.slot .lbl b{display:block;font-weight:600}
+.slot .lbl span{display:block;color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .meta{font-size:11px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slot.ok .meta{color:var(--ok)}
+.slot.opt{opacity:.75}
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;margin:0;padding:8px 0}
+.row+.row{border-top:1px solid var(--line)}
+.row label{font-size:13px}
+.row small{display:block;color:var(--muted);font-size:11.5px}
+.row.slider input[type=range]{grid-column:1 / -1;width:100%;margin:2px 0 0;accent-color:var(--accent)}
+.row output{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:34px;text-align:right;align-self:start;padding-top:2px}
+.row select{font:inherit;font-size:12.5px;color:var(--ink);background:var(--chip);border:1px solid var(--line-strong);border-radius:8px;padding:5px 8px;max-width:170px}
+.row input[type=text]{font:inherit;font-size:12.5px;color:var(--ink);background:var(--chip);border:1px solid var(--line-strong);border-radius:8px;padding:5px 8px;width:190px;max-width:100%}
+.exfiles{display:flex;flex-wrap:wrap;gap:4px 8px;padding:6px 0 2px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted)}
+.exfiles span{background:var(--chip);border-radius:6px;padding:2px 6px}
+.exfiles span.new{color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.row input[type=color]{width:46px;height:30px;border:1px solid var(--line-strong);border-radius:8px;padding:2px;background:var(--chip);cursor:pointer}
+.switch{appearance:none;width:38px;height:22px;border-radius:999px;background:var(--line-strong);position:relative;cursor:pointer;border:0;margin:0;transition:background .15s}
+.switch:checked{background:var(--accent)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s}
+.switch:checked::after{transform:translateX(16px)}
+.channels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ch{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ch canvas{width:100%;aspect-ratio:1/1;max-width:100%;border-radius:6px;border:1px solid var(--line);background:#888;display:block}
+.ch span{font-size:11px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch span b{color:var(--ink);font-weight:600}
+.notes{display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.note{padding:8px 10px;border-radius:var(--radius-s);background:var(--chip);color:var(--muted)}
+.note.warn{background:var(--warn-bg);color:var(--warn)}
+.notes:empty::after{content:"No issues found.";color:var(--muted)}
+.how{color:var(--muted);font-size:12.5px;line-height:1.55}
+.how p{margin:0 0 8px}
+.how code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:var(--chip);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.btn{appearance:none;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink);font:inherit;font-size:12.5px;padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--soft)}
+.btn:disabled{opacity:.5;cursor:default}
+.card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px;flex-wrap:wrap}
+.foot .how{font-size:11.5px}
+
+/* the library sits under the viewport, so the left column must scroll normally */
+.stick{position:static}
+/* lock screen */
+.lock{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
+.lock .card{width:min(420px,100%);}
+.lock h1{font-size:20px;margin:0 0 6px;display:flex;gap:9px;align-items:center}
+.lock p{color:var(--muted);font-size:13px;margin:0 0 14px}
+.lock input[type=password]{width:100%;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:var(--radius-s);background:var(--chip);color:var(--ink)}
+.lock .rowb{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+.lock label.rem{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.lock .err{color:var(--warn);font-size:12.5px;min-height:18px;margin-top:8px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;padding:8px 16px}
+/* library */
+.lib{margin-top:14px}
+.lib .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.lib .bar input{flex:1;min-width:160px;font:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line-strong);border-radius:8px;background:var(--panel);color:var(--ink)}
+.lib .bar .count{font-size:12px;color:var(--muted);white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.mat{appearance:none;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px;color:var(--ink);font:inherit;transition:border-color .15s,transform .15s}
+.mat:hover{border-color:var(--accent);transform:translateY(-1px)}
+.mat[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--soft)}
+.mat .th{width:100%;aspect-ratio:1/1;border-radius:6px;background:var(--chip);object-fit:cover;display:block}
+.mat .nm{font-size:11.5px;line-height:1.3;word-break:break-word;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mat .tg{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.mat.loading{opacity:.6}
+</style>
+
+<div class="lock" id="lock">
+  <section class="card">
+    <h1><span class="dot"></span>Scape Material Library</h1>
+    <p>Material previews for the Scape team. Enter the team password to open the library.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password">
+    <div class="rowb"><label class="rem"><input type="checkbox" id="remember"> Remember on this device</label><button class="btn primary" id="unlockBtn">Open library</button></div>
+    <div class="err" id="lockErr"></div>
+  </section>
+</div>
+<div class="wrap">
+  <header class="top">
+    <h1><span class="dot"></span>Scape Material Library</h1>
+    <div class="spec" aria-label="Studio texture spec">
+      <span class="chip">2048 delivered · 4096 source</span>
+      <span class="chip">PNG 16-bit</span>
+      <span class="chip">Normal · OpenGL (+Y up)</span>
+      <span class="chip">Mrao · R metal · G rough · B AO · A height</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="stick">
+      <section class="view" id="view" aria-label="3D preview">
+        <canvas id="gl"></canvas>
+        <div class="badge"><span class="tag" id="srcTag">Sample</span><b id="matName">Sample stone tile</b></div>
+        <div class="status" id="status" hidden>Decoding…</div>
+        <div class="hud">
+          <div class="seg" role="group" aria-label="Shape">
+            <button data-shape="sphere" aria-pressed="true">Sphere</button>
+            <button data-shape="plane" aria-pressed="false">Plane</button>
+            <button data-shape="cube" aria-pressed="false">Cube</button>
+          </div>
+          <div class="right">
+            <button class="ghost" id="tileBtn" aria-pressed="false">3×3 tiling</button>
+            <button class="ghost" id="spinBtn" aria-pressed="false">Spin</button>
+            <button class="ghost" id="resetBtn">Reset view</button>
+          </div>
+        </div>
+        <div class="dropveil" id="veil" hidden>Drop the PNGs</div>
+      </section>
+      <p class="legend">Drag to orbit, scroll or pinch to zoom. <b>Sphere</b> shows form and highlights, <b>Plane</b> with 3×3 tiling is the seam check, <b>Cube</b> shows the tile wrapping across faces. Click a material below to load it — or drop your own PNGs anywhere on the page.</p>
+      <section class="lib" id="lib" hidden>
+        <div class="bar"><input type="search" id="q" placeholder="Search materials…"><span class="count" id="count"></span></div>
+        <div class="grid" id="grid"></div>
+        <p class="legend">These are 2048px 8-bit previews. The full 16-bit sets live in ScapeTools/output on the hub.</p>
+      </section>
+    </div>
+
+    <aside class="panel">
+      <section class="card">
+        <h2>Texture set</h2>
+        <label class="drop" id="drop">
+          <input type="file" id="fileIn" multiple accept=".png,.json,image/png,image/*">
+          <strong>Drop your own PNGs here</strong><br>or click to choose. <code>Tile_Name_BaseColor / _Normal / _Mrao</code> are picked up by name; unpacked <code>_R _M _AO _H</code> maps are packed for you, and an <code>_Emissive</code> map is optional.
+        </label>
+        <ul class="slots" id="slots">
+          <li class="slot" data-slot="base"><div class="sw"><canvas width="22" height="22"></canvas></div><div class="lbl"><b>BaseColor</b><span>—</span></div><div class="meta">—</div></li>
+          <li class="slot" data-slot="normal"><div class="sw"><canvas width="22" height="22"></canvas></div><div class="lbl"><b>Normal</b><span>—</span></div><div class="meta">—</div></li>
+          <li class="slot" data-slot="mrao"><div class="sw"><canvas width="22" height="22"></canvas></div><div class="lbl"><b>Mrao</b><span>—</span></div><div class="meta">—</div></li>
+          <li class="slot opt" data-slot="emissive"><div class="sw"><canvas width="22" height="22"></canvas></div><div class="lbl"><b>Emissive</b><span>optional — none</span></div><div class="meta">—</div></li>
+        </ul>
+        <div class="foot">
+          <span class="how">Files are read in your browser only — nothing is uploaded.</span>
+          <button class="btn" id="clearBtn">Clear</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Colour <button class="btn" id="colorReset">Reset</button></h2>
+        <div class="row"><label for="tint">Tint<small>Multiplies the base colour, like a material colour in the Builder</small></label><input type="color" id="tint" value="#ffffff"></div>
+        <div class="row slider"><label for="hue">Hue shift</label><output for="hue" id="hueOut">0°</output><input type="range" id="hue" min="-180" max="180" step="1" value="0"></div>
+        <div class="row slider"><label for="sat">Saturation</label><output for="sat" id="satOut">1.00</output><input type="range" id="sat" min="0" max="2" step="0.02" value="1"></div>
+        <div class="row slider"><label for="bright">Brightness</label><output for="bright" id="brightOut">1.00</output><input type="range" id="bright" min="0" max="2" step="0.02" value="1"></div>
+      </section>
+
+      <section class="card">
+        <h2>Glow</h2>
+        <div class="row"><label for="glowMode">Glow from<small>Which part of the tile emits light</small></label>
+          <select id="glowMode">
+            <option value="off">Off</option>
+            <option value="map" id="optMap" disabled>Emissive map</option>
+            <option value="metal">Metallic (Mrao R)</option>
+            <option value="cracks">Cracks — dark AO (B)</option>
+            <option value="peaks">Height peaks (A)</option>
+            <option value="valleys">Height valleys (A)</option>
+            <option value="bright">Bright BaseColor</option>
+            <option value="dark">Dark BaseColor</option>
+            <option value="all">Whole surface</option>
+          </select></div>
+        <div class="row"><label for="glowColor">Glow colour<small>Tints the emissive map too</small></label><input type="color" id="glowColor" value="#7df9ff"></div>
+        <div class="row slider"><label for="glowStr">Glow strength<small>Above 1 it overexposes and blooms</small></label><output for="glowStr" id="glowStrOut">3.0</output><input type="range" id="glowStr" min="0" max="8" step="0.1" value="3"></div>
+        <div class="row slider"><label for="glowCon">Mask tightness<small>Higher keeps only the strongest parts glowing</small></label><output for="glowCon" id="glowConOut">1.00</output><input type="range" id="glowCon" min="0.25" max="4" step="0.05" value="1"></div>
+        <div class="row slider"><label for="bloom">Bloom<small>Halo around bright areas (viewer only)</small></label><output for="bloom" id="bloomOut">0.60</output><input type="range" id="bloom" min="0" max="2" step="0.05" value="0.6"></div>
+        <div class="row"><label for="pulse">Pulse<small>Slow breathing glow</small></label><input type="checkbox" class="switch" id="pulse"></div>
+        <div class="row slider"><label for="room">Room light<small>Turn down for a space level</small></label><output for="room" id="roomOut">1.00</output><input type="range" id="room" min="0" max="1.5" step="0.05" value="1"></div>
+      </section>
+
+      <section class="card">
+        <h2>Look</h2>
+        <div class="row slider"><label for="exposure">Exposure<small>Camera, not the material</small></label><output for="exposure" id="exposureOut">1.00</output><input type="range" id="exposure" min="0.3" max="2.5" step="0.05" value="1"></div>
+        <div class="row slider"><label for="disp">Height displacement<small>Pushes the mesh out with the Mrao A channel (sphere and plane)</small></label><output for="disp" id="dispOut">0.00</output><input type="range" id="disp" min="0" max="0.25" step="0.005" value="0"></div>
+        <div class="row slider"><label for="nstr">Normal strength<small>1.0 is what the engine sees</small></label><output for="nstr" id="nstrOut">1.00</output><input type="range" id="nstr" min="0" max="2" step="0.05" value="1"></div>
+        <div class="row"><label for="flipY">Flip normal Y<small>Only if bumps read as dents — the map is DirectX</small></label><input type="checkbox" class="switch" id="flipY"></div>
+      </section>
+
+      <section class="card" id="exportCard">
+        <h2>Export as new material</h2>
+        <div class="row"><label for="exName">New name<small>The original is never touched. Suffix it however you like — Blue, V2, Dark…</small></label><input type="text" id="exName" spellcheck="false" placeholder="Tile_NameBlue"></div>
+        <div class="exfiles" id="exFiles"></div>
+        <div class="foot"><span class="how" id="exNote"></span><button class="btn primary" id="exportBtn">Export .zip</button></div>
+      </section>
+
+      <section class="card">
+        <h2>Unpacked channels</h2>
+        <div class="channels" id="channels">
+          <div class="ch"><canvas id="thBase" width="128" height="128"></canvas><span><b>BaseColor</b> sRGB</span></div>
+          <div class="ch"><canvas id="thNormal" width="128" height="128"></canvas><span><b>Normal</b> OpenGL</span></div>
+          <div class="ch"><canvas id="thHeight" width="128" height="128"></canvas><span><b>Height</b> · A</span></div>
+          <div class="ch"><canvas id="thMetal" width="128" height="128"></canvas><span><b>Metal</b> · R</span></div>
+          <div class="ch"><canvas id="thRough" width="128" height="128"></canvas><span><b>Rough</b> · G</span></div>
+          <div class="ch"><canvas id="thAO" width="128" height="128"></canvas><span><b>AO</b> · B</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Checks</h2>
+        <div class="notes" id="notes"></div>
+      </section>
+
+      <section class="card how">
+        <h2>How this maps to the spec</h2>
+        <p>The Mrao file is read as the engine expects it — <code>R</code> metallic, <code>G</code> roughness, <code>B</code> ambient occlusion, <code>A</code> height — and rewired for the viewer's material, so what you see here is the same data the Triplanar shader will get.</p>
+        <p>Normals are treated as OpenGL. If a library material came out DirectX, bumps will look pressed in; tick <em>Flip normal Y</em> to confirm, then fix the source rather than the file.</p>
+        <p><em>Colour</em> and <em>Glow</em> are look-development tools. <em>Export as new material</em> bakes tint, hue, saturation and brightness into a new BaseColor, and the glow into an <code>_Emissive</code> map, under a new name — the original set is never touched, and a small recipe file in the zip lets anyone re-apply the same settings. Glow still needs an emissive slot in the engine material, which the Triplanar shader doesn't have yet.</p>
+        <p>16-bit PNGs are decoded at full depth and shown at 8-bit, which is all a screen can display. Sizes, bit depth and missing channels are reported under <em>Checks</em>.</p>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script src="three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+
+/* ---------- state ---------- */
+const state={shape:'sphere',tiling:false,spin:false,name:'Sample stone tile',source:'Sample'};
+const slots={base:null,normal:null,mrao:null,emissive:null,rough:null,metal:null,ao:null,height:null};
+const derived={base:null,mrao:null};
+const look={tint:'#ffffff',hue:0,sat:1,bright:1};
+const glow={mode:'off',color:'#7df9ff',strength:3,contrast:1,bloom:0.6,pulse:false,room:1};
+
+/* ---------- PNG decoding (full-depth, no premultiply) ---------- */
+async function decodePNG(buf){
+  const u8=new Uint8Array(buf), dv=new DataView(buf);
+  const sig=[137,80,78,71,13,10,26,10];
+  for(let i=0;i<8;i++) if(u8[i]!==sig[i]) return null;
+  let p=8,w=0,h=0,depth=0,ctype=0,interlace=0,palette=false,idatLen=0; const idat=[];
+  while(p+8<=u8.length){
+    const len=dv.getUint32(p); const type=String.fromCharCode(u8[p+4],u8[p+5],u8[p+6],u8[p+7]); const d=p+8;
+    if(type==='IHDR'){w=dv.getUint32(d);h=dv.getUint32(d+4);depth=u8[d+8];ctype=u8[d+9];interlace=u8[d+12];}
+    else if(type==='IDAT'){idat.push(u8.subarray(d,d+len));idatLen+=len;}
+    else if(type==='PLTE'){palette=true;}
+    else if(type==='IEND') break;
+    p=d+len+4;
+  }
+  const chans={0:1,2:3,4:2,6:4}[ctype];
+  if(!chans||palette||interlace||depth<8||typeof DecompressionStream==='undefined') return null;
+  const z=new Uint8Array(idatLen); let o=0; for(const c of idat){z.set(c,o);o+=c.length;}
+  const inflated=new Uint8Array(await new Response(new Blob([z]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+  const bpp=chans*depth/8, stride=w*bpp, out=new Uint8Array(h*stride);
+  let ip=0;
+  for(let y=0;y<h;y++){
+    const f=inflated[ip++], row=y*stride, prev=row-stride;
+    if(f===0){ out.set(inflated.subarray(ip,ip+stride),row); ip+=stride; }
+    else if(f===1){ for(let x=0;x<stride;x++){ out[row+x]=inflated[ip++]+(x>=bpp?out[row+x-bpp]:0); } }
+    else if(f===2){ if(y===0){ out.set(inflated.subarray(ip,ip+stride),row); ip+=stride; } else for(let x=0;x<stride;x++){ out[row+x]=inflated[ip++]+out[prev+x]; } }
+    else if(f===3){ for(let x=0;x<stride;x++){ const a=x>=bpp?out[row+x-bpp]:0, b=y>0?out[prev+x]:0; out[row+x]=inflated[ip++]+((a+b)>>1); } }
+    else if(f===4){ for(let x=0;x<stride;x++){ const a=x>=bpp?out[row+x-bpp]:0, b=y>0?out[prev+x]:0, c=(x>=bpp&&y>0)?out[prev+x-bpp]:0; const pp=a+b-c, pa=Math.abs(pp-a), pb=Math.abs(pp-b), pc=Math.abs(pp-c); out[row+x]=inflated[ip++]+((pa<=pb&&pa<=pc)?a:(pb<=pc?b:c)); } }
+    else return null;
+  }
+  const rgba=new Uint8ClampedArray(w*h*4), s16=depth===16?2:1, d16=depth===16?new Uint16Array(w*h*4):null;
+  for(let i=0,s=0;i<w*h;i++,s+=bpp){
+    let r,g,b,a=255;
+    if(chans===1){r=g=b=out[s];}
+    else if(chans===2){r=g=b=out[s];a=out[s+s16];}
+    else if(chans===3){r=out[s];g=out[s+s16];b=out[s+2*s16];}
+    else {r=out[s];g=out[s+s16];b=out[s+2*s16];a=out[s+3*s16];}
+    const j=i*4; rgba[j]=r;rgba[j+1]=g;rgba[j+2]=b;rgba[j+3]=a;
+    if(d16){ const R=(out[s]<<8)|out[s+1]; let G=R,B=R,A=65535;
+      if(chans===2){A=(out[s+2]<<8)|out[s+3];}
+      else if(chans>=3){G=(out[s+2]<<8)|out[s+3];B=(out[s+4]<<8)|out[s+5]; if(chans===4)A=(out[s+6]<<8)|out[s+7];}
+      d16[j]=R;d16[j+1]=G;d16[j+2]=B;d16[j+3]=A; }
+  }
+  return {width:w,height:h,bitDepth:depth,channels:chans,hasAlpha:chans===2||chans===4,data:rgba,data16:d16,approx:false};
+}
+async function decodeViaBrowser(file){
+  const bmp=await createImageBitmap(file,{premultiplyAlpha:'none',colorSpaceConversion:'none'});
+  const c=document.createElement('canvas'); c.width=bmp.width; c.height=bmp.height;
+  const ctx=c.getContext('2d'); ctx.drawImage(bmp,0,0);
+  const d=ctx.getImageData(0,0,c.width,c.height).data;
+  return {width:c.width,height:c.height,bitDepth:8,channels:4,hasAlpha:true,data:d,approx:true};
+}
+async function decodeFile(file){
+  let img=null, buf=null;
+  try{ buf=await file.arrayBuffer(); img=await decodePNG(buf); }catch(e){ img=null; }
+  if(!img) img=await decodeViaBrowser(file); else img.raw=buf;
+  img.file=file.name; return img;
+}
+
+/* ---------- PNG encoding (16-bit) ---------- */
+const CRC_T=(()=>{ const t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; } return t; })();
+function crc32(buf,start,end){ let c=0xFFFFFFFF; for(let i=start;i<end;i++) c=CRC_T[(c^buf[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+async function encodePNG16(w,h,channels,fill){
+  const rowLen=1+w*channels*2, raw=new Uint8Array(h*rowLen), px=new Float32Array(channels);
+  for(let y=0;y<h;y++){ const r0=y*rowLen; raw[r0]=0;
+    for(let x=0;x<w;x++){ fill(x,y,px); for(let c=0;c<channels;c++){ const v=Math.max(0,Math.min(65535,Math.round(px[c]*65535))); const o=r0+1+(x*channels+c)*2; raw[o]=v>>8; raw[o+1]=v&255; } } }
+  const comp=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer());
+  const chunk=(type,data)=>{ const c=new Uint8Array(12+data.length), dv=new DataView(c.buffer); dv.setUint32(0,data.length); for(let i=0;i<4;i++) c[4+i]=type.charCodeAt(i); c.set(data,8); dv.setUint32(8+data.length,crc32(c,4,8+data.length)); return c; };
+  const ihdr=new Uint8Array(13), d=new DataView(ihdr.buffer); d.setUint32(0,w); d.setUint32(4,h); ihdr[8]=16; ihdr[9]=channels===3?2:(channels===1?0:6);
+  return new Blob([new Uint8Array([137,80,78,71,13,10,26,10]),chunk('IHDR',ihdr),chunk('IDAT',comp),chunk('IEND',new Uint8Array(0))],{type:'image/png'});
+}
+function download(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),20000); }
+
+/* ---------- name classification ---------- */
+function classify(name){
+  const n=name.toLowerCase().replace(/\.[a-z0-9]+$/,'').replace(/_unpacked$/,'');
+  if(/emissive|emission|_e$|_em$|glow/.test(n)) return 'emissive';
+  if(/mrao|mraoh|_orm$|_arm$|_rma$/.test(n)) return 'mrao';
+  if(/basecolor|base_color|basecolour|albedo|diffuse|_bc$|_d$|_col(or|our)?$/.test(n)) return 'base';
+  if(/normal|_n$|_nrm$|_nor$|_nml$/.test(n)) return 'normal';
+  if(/rough|_r$/.test(n)) return 'rough';
+  if(/metal|_m$/.test(n)) return 'metal';
+  if(/ambientocclusion|ambient_occlusion|occlusion|_ao$/.test(n)) return 'ao';
+  if(/height|displacement|disp|_h$/.test(n)) return 'height';
+  return null;
+}
+function materialName(name){
+  return name.replace(/\.[a-z0-9]+$/i,'').replace(/_unpacked$/i,'')
+    .replace(/_(basecolor|base_color|basecolour|albedo|diffuse|normal|mrao|mraoh|roughness|rough|metallic|metalness|metal|ambientocclusion|occlusion|ao|height|displacement|emissive|emission|glow|bc|d|n|r|m|h|e|em)$/i,'');
+}
+
+/* ---------- sample material (procedural, tileable) ---------- */
+function makeSample(N){
+  const base=new Uint8ClampedArray(N*N*4), nrm=new Uint8ClampedArray(N*N*4), mrao=new Uint8ClampedArray(N*N*4), H=new Float32Array(N*N);
+  const tiles=4, mortar=0.05, TAU=Math.PI*2;
+  const hash=(i,j)=>{ let h=(i*374761393+j*668265263)|0; h=(h^(h>>>13))*1274126177|0; return ((h^(h>>>16))>>>0)/4294967295; };
+  const noise=(u,v)=> 0.5*Math.sin(u*TAU*3+Math.sin(v*TAU*2)*1.3)+0.3*Math.sin(v*TAU*5+u*TAU)+0.2*Math.sin((u+v)*TAU*7+Math.cos(u*TAU*2));
+  const sm=(e0,e1,x)=>{ const t=Math.min(1,Math.max(0,(x-e0)/(e1-e0))); return t*t*(3-2*t); };
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    const u=x/N, v=y/N, tu=u*tiles, tv=v*tiles, i=Math.floor(tu), j=Math.floor(tv), fu=tu-i, fv=tv-j;
+    const edge=Math.min(fu,1-fu,fv,1-fv), rnd=hash(i,j), n=noise(u,v);
+    const inTile=sm(0,mortar,edge);
+    const metalTile=rnd>0.84;
+    const h=0.18+inTile*(0.55+0.12*rnd)+0.06*n*inTile;
+    H[y*N+x]=h;
+    const k=(y*N+x)*4;
+    let r,g,b;
+    if(metalTile){ const t=0.55+0.1*n; r=t*0.95; g=t*0.82; b=t*0.55; }
+    else { const t=0.42+0.26*rnd+0.05*n; r=t*0.86; g=t*0.9; b=t*0.8; }
+    const mc=0.26+0.04*n;
+    r=r*inTile+mc*(1-inTile); g=g*inTile+mc*(1-inTile); b=b*inTile+mc*0.95*(1-inTile);
+    base[k]=r*255; base[k+1]=g*255; base[k+2]=b*255; base[k+3]=255;
+    const rough=metalTile?0.32+0.06*n:(0.55+0.12*n+0.1*rnd);
+    mrao[k]=metalTile?255*inTile:0;
+    mrao[k+1]=(rough*inTile+0.92*(1-inTile))*255;
+    mrao[k+2]=(1-(1-sm(0,mortar*2.2,edge))*0.55)*255;
+    mrao[k+3]=h*255;
+  }
+  const str=6;
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    const xl=H[y*N+((x-1+N)%N)], xr=H[y*N+((x+1)%N)], yu=H[((y-1+N)%N)*N+x], yd=H[((y+1)%N)*N+x];
+    let nx=-(xr-xl)*str, ny=(yd-yu)*str, nz=1; const l=Math.hypot(nx,ny,nz); nx/=l;ny/=l;nz/=l;
+    const k=(y*N+x)*4; nrm[k]=(nx*0.5+0.5)*255; nrm[k+1]=(ny*0.5+0.5)*255; nrm[k+2]=(nz*0.5+0.5)*255; nrm[k+3]=255;
+  }
+  const mk=(d)=>({width:N,height:N,bitDepth:8,channels:4,hasAlpha:true,data:d,approx:false,file:'sample'});
+  return {base:mk(base),normal:mk(nrm),mrao:mk(mrao)};
+}
+
+/* ---------- three.js scene ---------- */
+const canvas=$('#gl'), viewEl=$('#view');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.toneMapping=THREE.NoToneMapping;          // tone mapping + bloom happen in the composite pass
+renderer.outputEncoding=THREE.LinearEncoding;
+const maxAniso=renderer.capabilities.getMaxAnisotropy();
+const isWebGL2=renderer.capabilities.isWebGL2;
+const hdr=isWebGL2&&!!renderer.extensions.get('EXT_color_buffer_float');
+const scene=new THREE.Scene();
+const bgBase=new THREE.Color(0x1e2321).convertSRGBToLinear(), bg=bgBase.clone();
+scene.background=bg;
+const camera=new THREE.PerspectiveCamera(32,1,0.05,100);
+
+function buildEnv(){
+  const s=new THREE.Scene();
+  s.add(new THREE.Mesh(new THREE.BoxGeometry(14,14,14),new THREE.MeshBasicMaterial({color:0x3a3f3c,side:THREE.BackSide})));
+  const panel=(w,h,pos,intensity)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color().setScalar(intensity),side:THREE.DoubleSide})); m.position.copy(pos); m.lookAt(0,0,0); s.add(m); };
+  panel(7,4,new THREE.Vector3(0,6.9,1),7);
+  panel(2.5,6,new THREE.Vector3(-6.9,1.5,2.5),4);
+  panel(4,4,new THREE.Vector3(6.9,0.5,-3),1.4);
+  panel(12,1.5,new THREE.Vector3(0,-6.9,0),0.45);
+  panel(6,1.2,new THREE.Vector3(0,2.5,-6.9),2.2);
+  return s;
+}
+const pmrem=new THREE.PMREMGenerator(renderer);
+const envRT=pmrem.fromScene(buildEnv(),0.035);
+scene.environment=envRT.texture;
+pmrem.dispose();
+const key=new THREE.DirectionalLight(0xfff4e6,1.6); key.position.set(-3,4,4); scene.add(key);
+const rim=new THREE.DirectionalLight(0xdbe8ff,0.5); rim.position.set(3,1,-4); scene.add(rim);
+
+/* material with a colour-grade hook on the base colour */
+const colorU={mat:{value:new THREE.Matrix3()},bright:{value:1}};
+const material=new THREE.MeshStandardMaterial({color:0xffffff,metalness:1,roughness:1,envMapIntensity:1,emissive:0x000000,emissiveIntensity:0});
+material.normalScale=new THREE.Vector2(1,1);
+material.onBeforeCompile=shader=>{
+  shader.uniforms.uColorMat=colorU.mat; shader.uniforms.uBright=colorU.bright;
+  shader.fragmentShader=shader.fragmentShader
+    .replace('#include <common>','#include <common>\nuniform mat3 uColorMat;\nuniform float uBright;')
+    .replace('#include <map_fragment>','#ifdef USE_MAP\n\tvec4 texelColor = texture2D( map, vUv );\n\ttexelColor = mapTexelToLinear( texelColor );\n\ttexelColor.rgb = max( vec3( 0.0 ), uColorMat * texelColor.rgb ) * uBright;\n\tdiffuseColor *= texelColor;\n#endif');
+};
+function colorMatrix(hueDeg,sat){
+  const a=hueDeg*Math.PI/180, c=Math.cos(a), s=Math.sin(a), k=(1-c)/3, r3=Math.sqrt(1/3)*s;
+  const H=[c+k,k-r3,k+r3, k+r3,c+k,k-r3, k-r3,k+r3,c+k];
+  const lr=0.2126,lg=0.7152,lb=0.0722,q=1-sat;
+  const S=[q*lr+sat,q*lg,q*lb, q*lr,q*lg+sat,q*lb, q*lr,q*lg,q*lb+sat];
+  const M=new Array(9);
+  for(let i=0;i<3;i++) for(let j=0;j<3;j++){ let v=0; for(let t=0;t<3;t++) v+=H[i*3+t]*S[t*3+j]; M[i*3+j]=v; }
+  return M;
+}
+function applyLook(){
+  const M=colorMatrix(look.hue,look.sat); colorU.mat.value.set(...M); colorU.bright.value=look.bright;
+  material.color.set(look.tint).convertSRGBToLinear();
+  $('#hueOut').textContent=(look.hue>0?'+':'')+look.hue+'°'; $('#satOut').textContent=look.sat.toFixed(2); $('#brightOut').textContent=look.bright.toFixed(2);
+}
+
+let mesh=null;
+function makeGeo(kind){
+  let g;
+  if(kind==='sphere') g=new THREE.SphereGeometry(1,192,112);
+  else if(kind==='plane') g=new THREE.PlaneGeometry(2.4,2.4,256,256);
+  else g=new THREE.BoxGeometry(1.65,1.65,1.65,64,64,64);
+  g.setAttribute('uv2',g.attributes.uv);
+  return g;
+}
+function setShape(kind){
+  state.shape=kind;
+  if(mesh){ scene.remove(mesh); mesh.geometry.dispose(); }
+  mesh=new THREE.Mesh(makeGeo(kind),material); scene.add(mesh);
+  document.querySelectorAll('[data-shape]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shape===kind)));
+  applyRepeat(); applyDisplacement(); resetView();
+}
+
+/* textures */
+const tex={base:null,normal:null,orm:null,height:null,glow:null};
+function makeTex(rgba,w,h,srgb){
+  const t=new THREE.DataTexture(new Uint8Array(rgba.buffer,rgba.byteOffset,rgba.byteLength),w,h,THREE.RGBAFormat,THREE.UnsignedByteType);
+  t.flipY=true; t.wrapS=t.wrapT=THREE.RepeatWrapping;
+  t.magFilter=THREE.LinearFilter; t.minFilter=THREE.LinearMipmapLinearFilter; t.generateMipmaps=true;
+  t.anisotropy=maxAniso; t.unpackAlignment=1;
+  if(srgb) t.encoding=THREE.sRGBEncoding;
+  t.needsUpdate=true; return t;
+}
+function flat(r,g,b,a){ const d=new Uint8ClampedArray(4*4*4); for(let i=0;i<16;i++){d[i*4]=r;d[i*4+1]=g;d[i*4+2]=b;d[i*4+3]=a;} return {width:4,height:4,bitDepth:8,channels:4,hasAlpha:true,data:d,approx:false,file:null,isDefault:true}; }
+
+function composeMrao(){
+  const parts={metal:slots.metal,rough:slots.rough,ao:slots.ao,height:slots.height};
+  const present=Object.entries(parts).filter(([,v])=>v);
+  if(!present.length) return null;
+  const W=Math.max(...present.map(([,v])=>v.width)), H=Math.max(...present.map(([,v])=>v.height));
+  const out=new Uint8ClampedArray(W*H*4);
+  const samp=(img,x,y)=>{ const sx=Math.floor(x*img.width/W), sy=Math.floor(y*img.height/H); return img.data[(sy*img.width+sx)*4]; };
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    const k=(y*W+x)*4;
+    out[k]=parts.metal?samp(parts.metal,x,y):0;
+    out[k+1]=parts.rough?samp(parts.rough,x,y):128;
+    out[k+2]=parts.ao?samp(parts.ao,x,y):255;
+    out[k+3]=parts.height?samp(parts.height,x,y):128;
+  }
+  const missing=Object.entries(parts).filter(([,v])=>!v).map(([k])=>k);
+  return {width:W,height:H,bitDepth:Math.max(...present.map(([,v])=>v.bitDepth)),channels:4,hasAlpha:!!parts.height,data:out,approx:present.some(([,v])=>v.approx),file:present.map(([,v])=>v.file).join(', '),composed:true,missing};
+}
+
+/* glow mask: grayscale 0..255 per pixel from the chosen source, with tightness applied */
+function glowMaskData(){
+  const m=derived.mrao, b=derived.base;
+  let src=m, W=m.width, H=m.height, pick;
+  switch(glow.mode){
+    case 'metal': pick=(d,k)=>d[k]; break;
+    case 'cracks': pick=(d,k)=>255-d[k+2]; break;
+    case 'peaks': pick=(d,k)=>d[k+3]; break;
+    case 'valleys': pick=(d,k)=>255-d[k+3]; break;
+    case 'bright': src=b; W=b.width; H=b.height; pick=(d,k)=>(d[k]*54+d[k+1]*183+d[k+2]*19)>>8; break;
+    case 'dark': src=b; W=b.width; H=b.height; pick=(d,k)=>255-((d[k]*54+d[k+1]*183+d[k+2]*19)>>8); break;
+    default: return null;
+  }
+  const lut=new Uint8ClampedArray(256); for(let i=0;i<256;i++) lut[i]=255*Math.pow(i/255,glow.contrast);
+  const n=W*H, out=new Uint8ClampedArray(n), d=src.data;
+  for(let i=0;i<n;i++) out[i]=lut[pick(d,i*4)];
+  return {width:W,height:H,data:out};
+}
+function applyGlow(){
+  if(tex.glow){ tex.glow.dispose(); tex.glow=null; }
+  material.emissive.set(glow.color).convertSRGBToLinear();
+  let map=null, on=glow.mode!=='off';
+  if(glow.mode==='map'){
+    if(slots.emissive) map=makeTex(slots.emissive.data,slots.emissive.width,slots.emissive.height,true); else on=false;
+  } else if(on&&glow.mode!=='all'){
+    const g=glowMaskData(); const rgba=new Uint8ClampedArray(g.width*g.height*4);
+    for(let i=0;i<g.width*g.height;i++){ const v=g.data[i], k=i*4; rgba[k]=v;rgba[k+1]=v;rgba[k+2]=v;rgba[k+3]=255; }
+    map=makeTex(rgba,g.width,g.height,false);
+  }
+  tex.glow=map; material.emissiveMap=map; material.emissiveIntensity=on?glow.strength:0; material.needsUpdate=true;
+  applyRepeat();
+  $('#glowStrOut').textContent=glow.strength.toFixed(1); $('#glowConOut').textContent=glow.contrast.toFixed(2);
+}
+function applyRoom(){
+  const v=glow.room; material.envMapIntensity=v; key.intensity=1.6*v; rim.intensity=0.5*v;
+  bg.copy(bgBase).multiplyScalar(0.08+0.92*v);
+  $('#roomOut').textContent=v.toFixed(2);
+}
+
+function rebuild(){
+  const base=slots.base||flat(128,128,128,255);
+  const normal=slots.normal||flat(128,128,255,255);
+  const mrao=slots.mrao||composeMrao()||flat(0,128,255,128);
+  derived.base=base; derived.mrao=mrao;
+  const n=mrao.width*mrao.height, orm=new Uint8ClampedArray(n*4), hgt=new Uint8ClampedArray(n*4), src=mrao.data;
+  for(let i=0;i<n;i++){ const k=i*4; orm[k]=src[k+2]; orm[k+1]=src[k+1]; orm[k+2]=src[k]; orm[k+3]=255; const h=src[k+3]; hgt[k]=h;hgt[k+1]=h;hgt[k+2]=h;hgt[k+3]=255; }
+  for(const k of ['base','normal','orm','height']){ if(tex[k]) tex[k].dispose(); }
+  tex.base=makeTex(base.data,base.width,base.height,true);
+  tex.normal=makeTex(normal.data,normal.width,normal.height,false);
+  tex.orm=makeTex(orm,mrao.width,mrao.height,false);
+  tex.height=makeTex(hgt,mrao.width,mrao.height,false);
+  material.map=tex.base; material.normalMap=tex.normal;
+  material.aoMap=tex.orm; material.roughnessMap=tex.orm; material.metalnessMap=tex.orm;
+  material.displacementMap=tex.height;
+  material.needsUpdate=true;
+  $('#optMap').disabled=!slots.emissive;
+  applyGlow(); applyRepeat(); applyDisplacement();
+  updateSlots(base,normal,mrao); updateThumbs(base,normal,mrao); updateChecks(base,normal,mrao);
+  $('#matName').textContent=state.name; $('#srcTag').textContent=state.source;
+  updateExportPanel();
+}
+function applyRepeat(){
+  const t=state.tiling?3:1; let rx=t, ry=t;
+  if(state.shape==='sphere'){ rx=2*t; ry=t; }
+  for(const k in tex){ if(tex[k]) tex[k].repeat.set(rx,ry); }
+}
+function applyDisplacement(){
+  const v=parseFloat($('#disp').value);
+  const s=state.shape==='cube'?0:v;
+  material.displacementScale=s; material.displacementBias=-s*0.5;
+  $('#dispOut').textContent=v.toFixed(2);
+}
+
+/* ---------- panel updates ---------- */
+function drawThumb(cv,img,mode){
+  const ctx=cv.getContext('2d'), W=cv.width, Hh=cv.height, id=ctx.createImageData(W,Hh), d=id.data, s=img.data;
+  for(let y=0;y<Hh;y++){ const sy=Math.floor(y*img.height/Hh); for(let x=0;x<W;x++){ const sx=Math.floor(x*img.width/W), k=(sy*img.width+sx)*4, j=(y*W+x)*4;
+    if(mode==='rgb'){ d[j]=s[k];d[j+1]=s[k+1];d[j+2]=s[k+2]; }
+    else { const c=mode==='r'?s[k]:mode==='g'?s[k+1]:mode==='b'?s[k+2]:s[k+3]; d[j]=d[j+1]=d[j+2]=c; }
+    d[j+3]=255; } }
+  ctx.putImageData(id,0,0);
+}
+function updateSlots(base,normal,mrao){
+  const rows={base,normal,mrao,emissive:slots.emissive||flat(40,40,40,255)};
+  for(const [k,img] of Object.entries(rows)){
+    const li=document.querySelector(`.slot[data-slot="${k}"]`), lbl=li.querySelector('.lbl span'), meta=li.querySelector('.meta');
+    drawThumb(li.querySelector('canvas'),img,'rgb');
+    if(img.isDefault){ lbl.textContent=k==='emissive'?'optional — none':k==='mrao'?'default: metal 0 · rough 0.5 · AO 1 · height flat':'flat default'; meta.textContent=k==='emissive'?'—':'missing'; li.classList.remove('ok'); }
+    else { lbl.textContent=img.composed?('packed from '+img.file):img.file; meta.textContent=`${img.width}×${img.height} · ${img.approx?'8-bit*':img.bitDepth+'-bit'}`; li.classList.add('ok'); }
+  }
+}
+function updateThumbs(base,normal,mrao){
+  drawThumb($('#thBase'),base,'rgb'); drawThumb($('#thNormal'),normal,'rgb');
+  drawThumb($('#thMetal'),mrao,'r'); drawThumb($('#thRough'),mrao,'g'); drawThumb($('#thAO'),mrao,'b'); drawThumb($('#thHeight'),mrao,'a');
+}
+function stats(img,ch){ let mn=255,mx=0,sum=0,c=0; const step=Math.max(1,Math.floor(img.width*img.height/4096)); for(let i=0;i<img.width*img.height;i+=step){ const v=img.data[i*4+ch]; if(v<mn)mn=v; if(v>mx)mx=v; sum+=v; c++; } return {min:mn,max:mx,mean:sum/c}; }
+function updateChecks(base,normal,mrao){
+  const notes=[]; const add=(cls,txt)=>notes.push({cls,txt});
+  const pot=v=>(v&(v-1))===0;
+  const real=[['BaseColor',base],['Normal',normal],['Mrao',mrao]].filter(([,i])=>!i.isDefault);
+  if(state.source==='Sample'){ add('','Showing the built-in sample tile. Click a material in the library, or drop a Tile_ set to check your own.'); }
+  if(state.source==='Library'){ add('','Library preview: 2048px, 8-bit. The full 16-bit set is on the hub.'); }
+  for(const [n,img] of ((state.source==='Sample'||state.source==='Library')?[]:real)){
+    if(img.width!==img.height) add('warn',`${n} is ${img.width}×${img.height} — tiles should be square.`);
+    else if(!pot(img.width)) add('warn',`${n} is ${img.width}px — not a power of two (2048 or 4096).`);
+    else if(img.width>2048) add('',`${n} is ${img.width}px — a source-size map; the delivered set should be 2048.`);
+    else if(img.width<2048) add('warn',`${n} is ${img.width}px — the delivered spec is 2048.`);
+    if(img.approx) add('warn',`${n} was decoded by the browser at 8-bit (*), so its bit depth can't be checked here.`);
+    else if(img.bitDepth<16 && n!=='BaseColor') add('warn',`${n} is ${img.bitDepth}-bit — the spec asks for 16-bit PNG.`);
+  }
+  const sizes=new Set(real.map(([,i])=>i.width+'x'+i.height));
+  if(sizes.size>1) add('warn','Maps are different sizes — the engine wants BaseColor, Normal and Mrao to match.');
+  if(!base.isDefault||!normal.isDefault||!mrao.isDefault){
+    if(base.isDefault) add('warn','No BaseColor found — showing mid grey.');
+    if(normal.isDefault) add('warn','No Normal found — surface is flat.');
+    if(mrao.isDefault) add('warn','No Mrao found — using metal 0, roughness 0.5, AO 1.');
+  }
+  if(!normal.isDefault){ const b=stats(normal,2), g=stats(normal,1); if(b.mean<170) add('warn','Normal map is not mostly blue — check it is a tangent-space normal, not height or a flat colour.'); else if(g.mean<100||g.mean>156) add('','Normal green channel is off-centre — if bumps look inverted, tick Flip normal Y (DirectX map).'); }
+  if(!mrao.isDefault){
+    if(mrao.composed&&mrao.missing.length) add('warn',`Packed Mrao from unpacked maps but ${mrao.missing.join(', ')} ${mrao.missing.length>1?'were':'was'} missing — using defaults for ${mrao.missing.length>1?'those':'it'}.`);
+    if(!mrao.hasAlpha) add('warn','Mrao has no alpha channel — the height (A) is missing from the pack.');
+    else { const a=stats(mrao,3); if(a.max-a.min<3) add('warn','Mrao alpha is flat — height didn\'t make it into the A channel.'); }
+    const r=stats(mrao,0), gch=stats(mrao,1), bch=stats(mrao,2);
+    if(r.mean>200) add('','Metallic (R) is almost fully white — correct for a metal, otherwise the channels may be in the wrong order.');
+    if(bch.mean<90) add('warn','AO (B) is very dark — check the channel order (R metal, G rough, B AO).');
+    if(gch.max-gch.min<3) add('','Roughness (G) is a single value — fine for a uniform material.');
+  }
+  if(slots.emissive) add('',`Emissive map loaded (${slots.emissive.width}px). The Triplanar shader has no emissive slot yet, so treat this as a look preview to show Matheus.`);
+  const el=$('#notes'); el.innerHTML='';
+  for(const n of notes){ const d=document.createElement('div'); d.className='note'+(n.cls?' '+n.cls:''); d.textContent=n.txt; el.appendChild(d); }
+}
+
+/* ---------- loading ---------- */
+const statusEl=$('#status');
+async function handleFiles(files){
+  const all=Array.from(files);
+  for(const r of all.filter(f=>/\.json$/i.test(f.name))){ try{ applyRecipe(JSON.parse(await r.text())); }catch(e){ flash('Could not read '+r.name+': '+(e.message||e)); } }
+  const list=all.filter(f=>/image\//.test(f.type)||/\.(png|jpe?g|webp)$/i.test(f.name));
+  if(!list.length) return;
+  const named=list.map(f=>({f,kind:classify(f.name)}));
+  if(named.length===1&&!named[0].kind){
+    const nm=named[0].f.name;
+    if(!/\.[a-z0-9]{2,5}$/i.test(nm)||/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(nm)||named[0].f.size<400000){
+      flash('That looks like a thumbnail dragged off the grid — drop it onto the viewer to load the material, or just click its card. A real set is the Tile_…_BaseColor / _Normal / _Mrao PNGs.',9000); return; }
+    named[0].kind='base';
+  }
+  const known=named.filter(n=>n.kind);
+  const unknown=named.filter(n=>!n.kind);
+  if(!known.length){ flash(`Couldn't tell which map ${unknown.length>1?'these are':'this is'} — name it _BaseColor, _Normal or _Mrao.`); return; }
+  const newName=materialName(known[0].f.name);
+  if(state.source==='Sample'||state.source==='Library'||newName!==state.name){ for(const k in slots) slots[k]=null; }
+  statusEl.hidden=false; $('#exportBtn').disabled=true;
+  try{
+    for(let i=0;i<known.length;i++){
+      statusEl.textContent=`Decoding ${i+1}/${known.length} — ${known[i].f.name}`;
+      await new Promise(r=>setTimeout(r,10));
+      slots[known[i].kind]=await decodeFile(known[i].f);
+    }
+    state.name=newName||'Untitled'; state.source='Your files';
+    if(slots.emissive){ glow.mode='map'; $('#glowMode').value='map'; }
+    else if(glow.mode==='map'){ glow.mode='off'; $('#glowMode').value='off'; }
+    rebuild();
+    if(unknown.length) flash(`Ignored ${unknown.map(u=>u.f.name).join(', ')} — not recognised by name.`);
+  }catch(e){ console.error(e); flash('Could not read one of the files: '+(e.message||e)); }
+  finally{ statusEl.hidden=true; statusEl.textContent='Decoding…'; $('#exportBtn').disabled=false; }
+}
+let flashT=null;
+function flash(msg,ms){ statusEl.textContent=msg; statusEl.hidden=false; clearTimeout(flashT); flashT=setTimeout(()=>{statusEl.hidden=true;statusEl.textContent='Decoding…';},ms||4500); }
+
+/* ---------- export as a new material ---------- */
+const SRGB_LUT=(()=>{ const t=new Float32Array(256); for(let i=0;i<256;i++){ const c=i/255; t[i]=c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4); } return t; })();
+const toLin=c=>c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4);
+const toSRGB=c=>{ c=Math.max(0,Math.min(1,c)); return c<=0.0031308?c*12.92:1.055*Math.pow(c,1/2.4)-0.055; };
+function baseName(){ return (state.source==='Sample'?'Tile_Sample':state.name).replace(/[^\w\-]+/g,'_'); }
+let exNameTouched=false;
+function cleanExportName(v){
+  v=(v||'').trim().replace(/\.(png|zip|json)$/i,'')
+    .replace(/_(basecolor|normal|mrao|emissive|recipe)$/i,'')
+    .replace(/[\s\-]+(\w)/g,(m,c)=>c.toUpperCase()).replace(/[^\w]/g,'');
+  if(!v) return '';
+  if(!/^Tile_/i.test(v)) v='Tile_'+v.replace(/^_+/,'');
+  return 'Tile_'+v.slice(5,6).toUpperCase()+v.slice(6);
+}
+function normalChanged(){ return parseFloat($('#nstr').value)!==1||$('#flipY').checked; }
+function updateExportPanel(){
+  const inp=$('#exName');
+  if(!exNameTouched||!inp.value.trim()) { inp.value=baseName()+'V2'; exNameTouched=false; }
+  const name=cleanExportName(inp.value)||(baseName()+'V2');
+  const files=[[name+'_BaseColor.png','new'],[name+'_Normal.png',normalChanged()?'new':''],[name+'_Mrao.png','']];
+  if(glow.mode!=='off') files.push([name+'_Emissive.png','new']);
+  files.push([name+'_recipe.json','']);
+  $('#exFiles').innerHTML=files.map(([f,c])=>`<span class="${c}">${f}</span>`).join('');
+  const src=derived.base, bits=slots.base&&slots.base.bitDepth===16&&!slots.base.approx?16:8;
+  let note;
+  if(state.source==='Library') note=(derived.mrao.width>=src.width
+    ? `Preview quality: every map exported at ${src.width}px from the site's 8-bit previews — looks right, but it's lightly compressed data, not the 16-bit masters.`
+    : `Preview quality: every map exported at ${src.width}px — BaseColor from a ${src.width}px preview, Normal and Mrao scaled up from ${derived.mrao.width}px previews, all 8-bit. Spec-shaped, but softer than the real thing.`)
+    +` For the true 2048 / 16-bit set, drop the original PNGs onto this page (the recipe in the zip re-applies these settings) and export again.`;
+  else if(state.source==='Sample') note='This is the built-in sample tile — drop a real Tile_ set first.';
+  else note=`Full quality: ${src.width}px, ${bits}-bit. Normal and Mrao are passed through untouched${normalChanged()?' — except the Normal, which is re-baked with your strength / flip':''}. Colour and glow are baked into BaseColor and Emissive.`;
+  $('#exNote').textContent=note;
+}
+function currentRecipe(name){
+  return {scapeRecipe:1, from:state.name, name, made:new Date().toISOString().slice(0,10),
+    look:{tint:look.tint,hue:look.hue,sat:look.sat,bright:look.bright},
+    glow:{mode:glow.mode,color:glow.color,strength:glow.strength,contrast:glow.contrast},
+    normal:{strength:parseFloat($('#nstr').value),flipY:$('#flipY').checked}};
+}
+function applyRecipe(r){
+  if(!r||r.scapeRecipe!==1) throw new Error('not a Scape recipe');
+  const set=(id,v,ev)=>{ const el=$(id); if(el.type==='checkbox') el.checked=!!v; else el.value=v; el.dispatchEvent(new Event(ev||'input')); };
+  if(r.look){ set('#tint',r.look.tint); set('#hue',r.look.hue); set('#sat',r.look.sat); set('#bright',r.look.bright); }
+  if(r.normal){ set('#nstr',r.normal.strength); set('#flipY',r.normal.flipY,'change'); }
+  if(r.glow){ set('#glowColor',r.glow.color); set('#glowStr',r.glow.strength); set('#glowCon',r.glow.contrast);
+    const mode=(r.glow.mode==='map'&&!slots.emissive)?'off':r.glow.mode; set('#glowMode',mode,'change'); }
+  if(r.name){ $('#exName').value=r.name; exNameTouched=true; }
+  updateExportPanel(); flash('Recipe applied'+(r.from?' — from '+r.from:'')+'. Drop the original PNGs to bake it at full quality.',7000);
+}
+// library exports come out at one size (the BaseColor's); dropped originals keep each map's own size
+function exportSize(img){ return state.source==='Library'?[derived.base.width,derived.base.height]:[img.width,img.height]; }
+function bilin(iw,ih,W,H){ // (x,y,get) → bilinear sample of an iw×ih source at W×H
+  if(iw===W&&ih===H) return (x,y,get)=>get(x,y);
+  const sx=iw/W, sy=ih/H;
+  return (x,y,get)=>{ const fx=Math.max(0,Math.min(iw-1,(x+0.5)*sx-0.5)), fy=Math.max(0,Math.min(ih-1,(y+0.5)*sy-0.5));
+    const x0=Math.floor(fx), y0=Math.floor(fy), x1=Math.min(iw-1,x0+1), y1=Math.min(ih-1,y0+1), tx=fx-x0, ty=fy-y0;
+    return (get(x0,y0)*(1-tx)+get(x1,y0)*tx)*(1-ty)+(get(x0,y1)*(1-tx)+get(x1,y1)*tx)*ty; };
+}
+function channels(img){ const S=sampler(img), iw=img.width; return [0,1,2,3].map(c=>(px,py)=>S((py*iw+px)*4+c)); }
+// sample a map at full precision when we have it, 8-bit otherwise → 0..1
+function sampler(img){
+  const d16=img.data16, d8=img.data;
+  return d16?(k=>d16[k]/65535):(k=>d8[k]/255);
+}
+async function bakeBase(){
+  const img=derived.base, M=colorMatrix(look.hue,look.sat), tint=new THREE.Color(look.tint).convertSRGBToLinear(), br=look.bright;
+  const S=sampler(img), lin=img.data16?toLin:(v=>SRGB_LUT[Math.round(v*255)]);
+  return encodePNG16(img.width,img.height,3,(x,y,px)=>{
+    const k=(y*img.width+x)*4, r=lin(S(k)), g=lin(S(k+1)), b=lin(S(k+2));
+    px[0]=toSRGB(Math.max(0,M[0]*r+M[1]*g+M[2]*b)*br*tint.r);
+    px[1]=toSRGB(Math.max(0,M[3]*r+M[4]*g+M[5]*b)*br*tint.g);
+    px[2]=toSRGB(Math.max(0,M[6]*r+M[7]*g+M[8]*b)*br*tint.b);
+  });
+}
+async function bakeNormal(str,flip){
+  const img=slots.normal||flat(128,128,255,255), [W,H]=exportSize(img), B=bilin(img.width,img.height,W,H), [g0,g1,g2]=channels(img);
+  return encodePNG16(W,H,3,(x,y,px)=>{
+    let nx=(B(x,y,g0)*2-1)*str, ny=(B(x,y,g1)*2-1)*str*(flip?-1:1), nz=B(x,y,g2)*2-1;
+    const l=Math.hypot(nx,ny,nz)||1; nx/=l; ny/=l; nz/=l;
+    px[0]=nx*0.5+0.5; px[1]=ny*0.5+0.5; px[2]=nz*0.5+0.5;
+  });
+}
+async function bakeMrao(){
+  const img=derived.mrao, [W,H]=exportSize(img), B=bilin(img.width,img.height,W,H), [g0,g1,g2,g3]=channels(img);
+  return encodePNG16(W,H,4,(x,y,px)=>{ px[0]=B(x,y,g0); px[1]=B(x,y,g1); px[2]=B(x,y,g2); px[3]=B(x,y,g3); });
+}
+async function bakeEmissive(){
+  const col=new THREE.Color(glow.color);   // sRGB colour × mask, same as the viewer's emissive
+  if(glow.mode==='map'&&slots.emissive){ const img=slots.emissive, [W,H]=exportSize(img), B=bilin(img.width,img.height,W,H), [g0,g1,g2]=channels(img);
+    return encodePNG16(W,H,3,(x,y,px)=>{ px[0]=B(x,y,g0)*col.r; px[1]=B(x,y,g1)*col.g; px[2]=B(x,y,g2)*col.b; }); }
+  let W,H,get;
+  if(glow.mode==='all'){ [W,H]=exportSize(derived.mrao); get=()=>1; }
+  else { const g=glowMaskData(); if(!g) return null; [W,H]=exportSize(g); const B=bilin(g.width,g.height,W,H), gm=(px,py)=>g.data[py*g.width+px]/255; get=(x,y)=>B(x,y,gm); }
+  return encodePNG16(W,H,3,(x,y,px)=>{ const v=get(x,y); px[0]=v*col.r; px[1]=v*col.g; px[2]=v*col.b; });
+}
+function makeZip(entries){ // STORE-only zip: PNGs are already compressed
+  const enc=new TextEncoder(), parts=[], central=[]; let offset=0;
+  const now=new Date(), dtime=((now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1))&0xffff, ddate=(((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate())&0xffff;
+  for(const [name,data] of entries){
+    const n=enc.encode(name), crc=crc32(data,0,data.length), sz=data.length;
+    const lh=new Uint8Array(30+n.length), v=new DataView(lh.buffer);
+    v.setUint32(0,0x04034b50,true); v.setUint16(4,20,true); v.setUint16(6,0x0800,true); v.setUint16(8,0,true); v.setUint16(10,dtime,true); v.setUint16(12,ddate,true);
+    v.setUint32(14,crc,true); v.setUint32(18,sz,true); v.setUint32(22,sz,true); v.setUint16(26,n.length,true); v.setUint16(28,0,true); lh.set(n,30);
+    const ch=new Uint8Array(46+n.length), c=new DataView(ch.buffer);
+    c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true); c.setUint16(12,dtime,true); c.setUint16(14,ddate,true);
+    c.setUint32(16,crc,true); c.setUint32(20,sz,true); c.setUint32(24,sz,true); c.setUint16(28,n.length,true); c.setUint32(42,offset,true); ch.set(n,46);
+    parts.push(lh,data); central.push(ch); offset+=lh.length+sz;
+  }
+  const cd=central.reduce((a,c)=>a+c.length,0), end=new Uint8Array(22), e=new DataView(end.buffer);
+  e.setUint32(0,0x06054b50,true); e.setUint16(8,entries.length,true); e.setUint16(10,entries.length,true); e.setUint32(12,cd,true); e.setUint32(16,offset,true);
+  return new Blob([...parts,...central,end],{type:'application/zip'});
+}
+async function exportMaterial(){
+  if(typeof CompressionStream==='undefined'){ flash('This browser can\'t write PNGs — use Chrome, Edge or Safari 16.4+.'); return; }
+  if(state.source==='Sample'){ flash('Load a real Tile_ set (or pick one from the library) first.'); return; }
+  if(!statusEl.hidden&&/^Decoding|^Loading/.test(statusEl.textContent)){ flash('Still loading — try again in a moment.'); return; }
+  const name=cleanExportName($('#exName').value)||(baseName()+'V2'); $('#exName').value=name; exNameTouched=true;
+  const btn=$('#exportBtn'); btn.disabled=true;
+  const tick=async(msg)=>{ flash(msg,120000); await new Promise(r=>setTimeout(r,30)); };
+  try{
+    const files=[];
+    await tick(`Baking ${name} — BaseColor…`);  files.push([name+'_BaseColor.png', await bakeBase()]);
+    const str=parseFloat($('#nstr').value), flip=$('#flipY').checked;
+    if(slots.normal&&slots.normal.raw&&!normalChanged()) files.push([name+'_Normal.png', new Blob([slots.normal.raw],{type:'image/png'})]);
+    else { await tick(`Baking ${name} — Normal…`); files.push([name+'_Normal.png', await bakeNormal(str,flip)]); }
+    if(slots.mrao&&slots.mrao.raw&&!slots.mrao.composed) files.push([name+'_Mrao.png', new Blob([slots.mrao.raw],{type:'image/png'})]);
+    else { await tick(`Baking ${name} — Mrao…`); files.push([name+'_Mrao.png', await bakeMrao()]); }
+    if(glow.mode!=='off'){ await tick(`Baking ${name} — Emissive…`); const e=await bakeEmissive(); if(e) files.push([name+'_Emissive.png',e]); }
+    files.push([name+'_recipe.json', new Blob([JSON.stringify(currentRecipe(name),null,1)],{type:'application/json'})]);
+    if(state.source==='Library') files.push(['PREVIEW QUALITY - not for the kit.txt', new Blob([
+      `${name} was exported from the website's previews (8-bit, lightly compressed). All maps are ${derived.base.width}px`+
+      (derived.mrao.width<derived.base.width?`, but Normal and Mrao\nwere scaled up from ${derived.mrao.width}px previews, so they are softer than the real set`:``)+
+      `.\nFine for sharing a look or testing locally — not the 16-bit masters.\n\n`+
+      `To make the real set: open the library page, drop the original ${state.name} PNGs from output/ onto it,\n`+
+      `drop ${name}_recipe.json to restore these settings, and export again — that gives the true 2048 / 16-bit set\n`+
+      `with Normal and Mrao passed through untouched.\n`],{type:'text/plain'})]);
+    await tick('Zipping…');
+    const entries=[]; for(const [f,b] of files) entries.push([name+'/'+f, new Uint8Array(await b.arrayBuffer())]);
+    const zip=makeZip(entries); download(zip,name+'.zip');
+    flash(`Exported ${name}.zip (${(zip.size/1048576).toFixed(1)} MB) — unzip it into your output folder.`,8000);
+  } finally { btn.disabled=false; }
+}
+
+/* ---------- post-processing: HDR scene → bright pass → blur pyramid → ACES + bloom composite ---------- */
+const rtType=hdr?THREE.HalfFloatType:THREE.UnsignedByteType;
+function makeRT(w,h,msaa){
+  const opts={type:rtType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBAFormat,depthBuffer:msaa,stencilBuffer:false};
+  const rt=(msaa&&isWebGL2&&THREE.WebGLMultisampleRenderTarget)?new THREE.WebGLMultisampleRenderTarget(w,h,opts):new THREE.WebGLRenderTarget(w,h,opts);
+  rt.texture.encoding=THREE.LinearEncoding; return rt;
+}
+let rtScene=null, rtBright=null, levels=[];
+function setupRTs(w,h){
+  if(rtScene){ rtScene.dispose(); rtBright.dispose(); for(const L of levels){ L.a.dispose(); L.b.dispose(); } }
+  rtScene=makeRT(w,h,true);
+  let lw=Math.max(1,w>>1), lh=Math.max(1,h>>1);
+  rtBright=makeRT(lw,lh,false); levels=[];
+  for(let i=0;i<3;i++){ levels.push({a:makeRT(lw,lh,false),b:makeRT(lw,lh,false),w:lw,h:lh}); lw=Math.max(1,lw>>1); lh=Math.max(1,lh>>1); }
+}
+const VS='varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }';
+const brightMat=new THREE.ShaderMaterial({uniforms:{tex:{value:null},uThreshold:{value:hdr?1.0:0.8},uKnee:{value:0.5}},vertexShader:VS,depthTest:false,depthWrite:false,fragmentShader:`
+  varying vec2 vUv; uniform sampler2D tex; uniform float uThreshold, uKnee;
+  void main(){ vec3 c=texture2D(tex,vUv).rgb; float l=dot(c,vec3(0.2126,0.7152,0.0722));
+    float soft=clamp(l-uThreshold+uKnee,0.0,2.0*uKnee); soft=soft*soft/(4.0*uKnee+0.0001);
+    float contrib=max(soft,l-uThreshold)/max(l,0.0001); gl_FragColor=vec4(c*contrib,1.0); }`});
+const blurMat=new THREE.ShaderMaterial({uniforms:{tex:{value:null},uDir:{value:new THREE.Vector2()}},vertexShader:VS,depthTest:false,depthWrite:false,fragmentShader:`
+  varying vec2 vUv; uniform sampler2D tex; uniform vec2 uDir;
+  void main(){ vec3 c=texture2D(tex,vUv).rgb*0.227027;
+    c+=(texture2D(tex,vUv+uDir*1.0).rgb+texture2D(tex,vUv-uDir*1.0).rgb)*0.1945946;
+    c+=(texture2D(tex,vUv+uDir*2.0).rgb+texture2D(tex,vUv-uDir*2.0).rgb)*0.1216216;
+    c+=(texture2D(tex,vUv+uDir*3.0).rgb+texture2D(tex,vUv-uDir*3.0).rgb)*0.054054;
+    c+=(texture2D(tex,vUv+uDir*4.0).rgb+texture2D(tex,vUv-uDir*4.0).rgb)*0.016216;
+    gl_FragColor=vec4(c,1.0); }`});
+const compMat=new THREE.ShaderMaterial({uniforms:{tScene:{value:null},tB0:{value:null},tB1:{value:null},tB2:{value:null},uExposure:{value:1},uBloom:{value:0.6}},vertexShader:VS,depthTest:false,depthWrite:false,fragmentShader:`
+  varying vec2 vUv; uniform sampler2D tScene,tB0,tB1,tB2; uniform float uExposure,uBloom;
+  const mat3 ACESIn=mat3(vec3(0.59719,0.07600,0.02840),vec3(0.35458,0.90834,0.13383),vec3(0.04823,0.01566,0.83777));
+  const mat3 ACESOut=mat3(vec3(1.60475,-0.10208,-0.00327),vec3(-0.53108,1.10813,-0.07276),vec3(-0.07367,-0.00605,1.07602));
+  vec3 rrt(vec3 v){ vec3 a=v*(v+0.0245786)-0.000090537; vec3 b=v*(0.983729*v+0.4329510)+0.238081; return a/b; }
+  vec3 aces(vec3 c){ c=ACESIn*c; c=rrt(c); c=ACESOut*c; return clamp(c,0.0,1.0); }
+  vec3 srgb(vec3 c){ return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-0.055,step(vec3(0.0031308),c)); }
+  void main(){ vec3 col=texture2D(tScene,vUv).rgb;
+    vec3 bloom=texture2D(tB0,vUv).rgb+texture2D(tB1,vUv).rgb*0.8+texture2D(tB2,vUv).rgb*0.7;
+    col+=bloom*uBloom; col=aces(col*uExposure/0.6); gl_FragColor=vec4(srgb(col),1.0); }`});
+const ortho=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+const quadScene=new THREE.Scene(); const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),compMat); quad.frustumCulled=false; quadScene.add(quad);
+function pass(mat,target){ quad.material=mat; renderer.setRenderTarget(target); renderer.render(quadScene,ortho); }
+function renderFrame(){
+  renderer.setRenderTarget(rtScene); renderer.render(scene,camera);
+  brightMat.uniforms.tex.value=rtScene.texture; pass(brightMat,rtBright);
+  let src=rtBright.texture; const outs=[];
+  for(const L of levels){
+    blurMat.uniforms.tex.value=src; blurMat.uniforms.uDir.value.set(1/L.w,0); pass(blurMat,L.a);
+    blurMat.uniforms.tex.value=L.a.texture; blurMat.uniforms.uDir.value.set(0,1/L.h); pass(blurMat,L.b);
+    src=L.b.texture; outs.push(src);
+  }
+  compMat.uniforms.tScene.value=rtScene.texture; compMat.uniforms.tB0.value=outs[0]; compMat.uniforms.tB1.value=outs[1]; compMat.uniforms.tB2.value=outs[2];
+  pass(compMat,null);
+}
+
+/* ---------- orbit ---------- */
+const orbit={theta:0.55,phi:1.2,dist:3.4};
+function resetView(){
+  if(state.shape==='plane'){ orbit.theta=0.2; orbit.phi=Math.PI/2-0.14; orbit.dist=5.1; }
+  else { orbit.theta=0.55; orbit.phi=1.2; orbit.dist=3.4; }
+  if(mesh) mesh.rotation.set(0,0,0);
+}
+function updateCamera(){
+  const sp=Math.sin(orbit.phi);
+  camera.position.set(orbit.dist*sp*Math.sin(orbit.theta),orbit.dist*Math.cos(orbit.phi),orbit.dist*sp*Math.cos(orbit.theta));
+  camera.lookAt(0,0,0);
+}
+let drag=null; const pointers=new Map();
+canvas.addEventListener('pointerdown',e=>{ canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId,{x:e.clientX,y:e.clientY}); drag={x:e.clientX,y:e.clientY}; });
+canvas.addEventListener('pointermove',e=>{
+  if(!pointers.has(e.pointerId)) return;
+  const prev=pointers.get(e.pointerId);
+  if(pointers.size===2){
+    const pts=[...pointers.values()]; const other=pts.find(p=>p!==prev);
+    const before=Math.hypot(prev.x-other.x,prev.y-other.y), after=Math.hypot(e.clientX-other.x,e.clientY-other.y);
+    if(before>0) orbit.dist=Math.min(9,Math.max(1.4,orbit.dist*before/after));
+  } else if(drag){
+    orbit.theta-=(e.clientX-drag.x)*0.006; orbit.phi=Math.min(Math.PI-0.15,Math.max(0.15,orbit.phi-(e.clientY-drag.y)*0.006)); drag={x:e.clientX,y:e.clientY};
+  }
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+});
+const endDrag=e=>{ pointers.delete(e.pointerId); drag=pointers.size===1?[...pointers.values()][0]:null; };
+canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
+canvas.addEventListener('wheel',e=>{ e.preventDefault(); orbit.dist=Math.min(9,Math.max(1.4,orbit.dist*(1+e.deltaY*0.0012))); },{passive:false});
+
+/* ---------- resize / loop ---------- */
+function resize(){
+  const w=viewEl.clientWidth, h=viewEl.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  const px=renderer.getDrawingBufferSize(new THREE.Vector2()); setupRTs(px.x,px.y);
+}
+new ResizeObserver(resize).observe(viewEl);
+let t0=performance.now();
+function loop(now){
+  const t=(now-t0)/1000;
+  if(state.spin&&mesh) mesh.rotation.y+=0.004;
+  if(glow.mode!=='off'&&material.emissiveIntensity>0) material.emissiveIntensity=glow.strength*(glow.pulse?(0.55+0.45*(0.5+0.5*Math.sin(t*2.0))):1);
+  updateCamera(); if(rtScene) renderFrame(); requestAnimationFrame(loop);
+}
+
+/* ---------- UI wiring ---------- */
+document.querySelectorAll('[data-shape]').forEach(b=>b.addEventListener('click',()=>setShape(b.dataset.shape)));
+$('#tileBtn').addEventListener('click',e=>{ state.tiling=!state.tiling; e.currentTarget.setAttribute('aria-pressed',String(state.tiling)); applyRepeat(); });
+$('#spinBtn').addEventListener('click',e=>{ state.spin=!state.spin; e.currentTarget.setAttribute('aria-pressed',String(state.spin)); });
+$('#resetBtn').addEventListener('click',resetView);
+$('#exposure').addEventListener('input',e=>{ compMat.uniforms.uExposure.value=parseFloat(e.target.value); $('#exposureOut').textContent=parseFloat(e.target.value).toFixed(2); });
+$('#disp').addEventListener('input',applyDisplacement);
+$('#nstr').addEventListener('input',e=>{ const v=parseFloat(e.target.value); material.normalScale.set(v,$('#flipY').checked?-v:v); $('#nstrOut').textContent=v.toFixed(2); updateExportPanel(); });
+$('#flipY').addEventListener('change',e=>{ const v=parseFloat($('#nstr').value); material.normalScale.set(v,e.target.checked?-v:v); updateExportPanel(); });
+$('#tint').addEventListener('input',e=>{ look.tint=e.target.value; applyLook(); });
+$('#hue').addEventListener('input',e=>{ look.hue=parseFloat(e.target.value); applyLook(); });
+$('#sat').addEventListener('input',e=>{ look.sat=parseFloat(e.target.value); applyLook(); });
+$('#bright').addEventListener('input',e=>{ look.bright=parseFloat(e.target.value); applyLook(); });
+$('#colorReset').addEventListener('click',()=>{ look.tint='#ffffff'; look.hue=0; look.sat=1; look.bright=1; $('#tint').value='#ffffff'; $('#hue').value=0; $('#sat').value=1; $('#bright').value=1; applyLook(); });
+$('#exportBtn').addEventListener('click',()=>exportMaterial().catch(e=>{ console.error(e); flash('Export failed: '+(e.message||e)); }));
+$('#exName').addEventListener('input',()=>{ exNameTouched=true; updateExportPanel(); });
+$('#glowMode').addEventListener('change',e=>{ glow.mode=e.target.value; applyGlow(); updateExportPanel(); });
+$('#glowColor').addEventListener('input',e=>{ glow.color=e.target.value; material.emissive.set(glow.color).convertSRGBToLinear(); });
+$('#glowStr').addEventListener('input',e=>{ glow.strength=parseFloat(e.target.value); $('#glowStrOut').textContent=glow.strength.toFixed(1); if(glow.mode!=='off') material.emissiveIntensity=glow.strength; });
+let conT=null; $('#glowCon').addEventListener('input',e=>{ glow.contrast=parseFloat(e.target.value); $('#glowConOut').textContent=glow.contrast.toFixed(2); clearTimeout(conT); conT=setTimeout(applyGlow,120); });
+$('#bloom').addEventListener('input',e=>{ glow.bloom=parseFloat(e.target.value); compMat.uniforms.uBloom.value=glow.bloom; $('#bloomOut').textContent=glow.bloom.toFixed(2); });
+$('#pulse').addEventListener('change',e=>{ glow.pulse=e.target.checked; });
+$('#room').addEventListener('input',e=>{ glow.room=parseFloat(e.target.value); applyRoom(); });
+$('#fileIn').addEventListener('change',e=>{ handleFiles(e.target.files); e.target.value=''; });
+$('#clearBtn').addEventListener('click',()=>{ libActive=null; document.querySelectorAll('.mat').forEach(b=>b.setAttribute('aria-pressed','false')); for(const k in slots) slots[k]=null; const s=makeSample(512); slots.base=s.base; slots.normal=s.normal; slots.mrao=s.mrao; state.name='Sample stone tile'; state.source='Sample'; if(glow.mode==='map'){ glow.mode='off'; $('#glowMode').value='off'; } rebuild(); });
+const veil=$('#veil'), dropEl=$('#drop');
+['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{ e.preventDefault(); veil.hidden=false; dropEl.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{ e.preventDefault(); if(ev==='drop'||!e.relatedTarget){ veil.hidden=true; dropEl.classList.remove('over'); } }));
+document.addEventListener('drop',e=>{
+  const card=e.dataTransfer&&e.dataTransfer.getData('text/x-scape-material');
+  if(card&&window.__loadLibraryMaterial){ window.__loadLibraryMaterial(card); return; }
+  if(e.dataTransfer&&e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+});
+
+/* ---------- go ---------- */
+{ const s=makeSample(512); slots.base=s.base; slots.normal=s.normal; slots.mrao=s.mrao; }
+
+/* ---------- library: password, decryption, grid ---------- */
+const LIB='lib/';
+let libKey=null, libManifest=null, libActive=null;
+const hexBytes=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
+async function deriveKey(pw,saltHex,iter){
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt:hexBytes(saltHex),iterations:iter,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+}
+async function fetchDec(path){
+  const fresh=/^(lock\.json|check\.wasm|manifest\.wasm)$/.test(path); const r=await fetch(LIB+path,{cache:fresh?'no-store':'force-cache'}); if(!r.ok) throw new Error('missing '+path);
+  const u=new Uint8Array(await r.arrayBuffer());
+  return crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},libKey,u.slice(12));
+}
+async function decodeImage(buf,type){
+  const bmp=await createImageBitmap(new Blob([buf],{type}),{premultiplyAlpha:'none',colorSpaceConversion:'none'});
+  const c=document.createElement('canvas'); c.width=bmp.width; c.height=bmp.height;
+  const ctx=c.getContext('2d',{willReadFrequently:true}); ctx.drawImage(bmp,0,0);
+  const d=ctx.getImageData(0,0,c.width,c.height).data;
+  return {width:c.width,height:c.height,bitDepth:8,channels:4,hasAlpha:true,data:d,approx:false};
+}
+async function unlock(pw){
+  const lock=await (await fetch(LIB+'lock.json',{cache:'no-store'})).json();
+  const key=await deriveKey(pw,lock.salt,lock.iter);
+  const prev=libKey; libKey=key;
+  try{ const ok=new TextDecoder().decode(await fetchDec('check.wasm')); if(ok!=='scape-material-library-ok') throw 0; }
+  catch(e){ libKey=prev; return false; }
+  libManifest=JSON.parse(new TextDecoder().decode(await fetchDec('manifest.wasm')));
+  return true;
+}
+function renderGrid(filter){
+  const grid=$('#grid'); grid.innerHTML='';
+  const f=(filter||'').trim().toLowerCase();
+  const items=libManifest.materials.filter(m=>!f||m.name.toLowerCase().includes(f));
+  $('#count').textContent=items.length+' of '+libManifest.materials.length;
+  for(const m of items){
+    const b=document.createElement('button'); b.className='mat'; b.type='button'; b.dataset.name=m.name; b.setAttribute('aria-pressed',String(libActive===m.name));
+    const img=document.createElement('img'); img.className='th'; img.alt=''; img.draggable=false; b.appendChild(img);
+    b.draggable=true; b.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/x-scape-material',m.name); e.dataTransfer.effectAllowed='copy'; });
+    const nm=document.createElement('div'); nm.className='nm'; nm.textContent=m.name.replace(/^Tile_/,'').replace(/([a-z])([A-Z0-9])/g,'$1 $2'); b.appendChild(nm);
+    if(m.emissive){ const t=document.createElement('div'); t.className='tg'; t.textContent='glows'; b.appendChild(t); }
+    b.addEventListener('click',()=>loadMaterial(m));
+    grid.appendChild(b);
+    fetchDec((m.dir||m.name)+'/thumb.jpg.wasm').then(buf=>{ img.src=URL.createObjectURL(new Blob([buf],{type:'image/jpeg'})); }).catch(()=>{});
+  }
+}
+window.__loadLibraryMaterial=name=>{ const m=(libManifest&&libManifest.materials||[]).find(x=>x.name===name); if(m) loadMaterial(m); };
+async function loadMaterial(m){
+  const btn=document.querySelector(`.mat[data-name="${m.name}"]`); if(btn) btn.classList.add('loading');
+  statusEl.textContent='Loading '+m.name+'…'; statusEl.hidden=false;
+  try{
+    const [base,normal,mra,hgt,emis]=await Promise.all([
+      fetchDec((m.dir||m.name)+'/base.jpg.wasm').then(b=>decodeImage(b,'image/jpeg')),
+      fetchDec((m.dir||m.name)+'/normal.webp.wasm').then(b=>decodeImage(b,'image/webp')),
+      fetchDec((m.dir||m.name)+'/mra.jpg.wasm').then(b=>decodeImage(b,'image/jpeg')),
+      fetchDec((m.dir||m.name)+'/height.jpg.wasm').then(b=>decodeImage(b,'image/jpeg')),
+      m.emissive?fetchDec((m.dir||m.name)+'/emissive.jpg.wasm').then(b=>decodeImage(b,'image/jpeg')):Promise.resolve(null)]);
+    const n=mra.width*mra.height, d=new Uint8ClampedArray(n*4);
+    for(let i=0;i<n;i++){ const k=i*4; d[k]=mra.data[k]; d[k+1]=mra.data[k+1]; d[k+2]=mra.data[k+2]; d[k+3]=hgt.data[k]; }
+    for(const k in slots) slots[k]=null;
+    slots.base={...base,file:m.name+'_BaseColor'}; slots.normal={...normal,file:m.name+'_Normal'};
+    slots.mrao={width:mra.width,height:mra.height,bitDepth:8,channels:4,hasAlpha:true,data:d,approx:false,file:m.name+'_Mrao'};
+    if(emis) slots.emissive={...emis,file:m.name+'_Emissive'};
+    state.name=m.name; state.source='Library';
+    if(slots.emissive){ glow.mode='map'; $('#glowMode').value='map'; } else if(glow.mode==='map'){ glow.mode='off'; $('#glowMode').value='off'; }
+    rebuild();
+    libActive=m.name; document.querySelectorAll('.mat').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.name===m.name)));
+    $('#view').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(e){ console.error(e); flash('Could not load '+m.name); }
+  finally{ statusEl.hidden=true; statusEl.textContent='Decoding…'; if(btn) btn.classList.remove('loading'); }
+}
+async function tryUnlock(pw,remember){
+  const err=$('#lockErr'); err.textContent='Checking…';
+  let ok=false; try{ ok=await unlock(pw); }catch(e){ console.error(e); }
+  if(!ok){ err.textContent='That password didn’t open it.'; try{ localStorage.removeItem('sml_pw'); }catch(e){} return; }
+  err.textContent='';
+  try{ if(remember) localStorage.setItem('sml_pw',btoa(unescape(encodeURIComponent(pw)))); else localStorage.removeItem('sml_pw'); }catch(e){}
+  $('#lock').hidden=true; $('#lib').hidden=false; renderGrid('');
+  if(libManifest.materials.length) loadMaterial(libManifest.materials[0]);
+}
+$('#unlockBtn').addEventListener('click',()=>tryUnlock($('#pw').value,$('#remember').checked));
+$('#pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock($('#pw').value,$('#remember').checked); });
+$('#q').addEventListener('input',e=>renderGrid(e.target.value));
+(async()=>{ try{ const saved=localStorage.getItem('sml_pw'); if(saved){ $('#remember').checked=true; await tryUnlock(decodeURIComponent(escape(atob(saved))),true); } }catch(e){} })();
+
+applyLook(); applyRoom(); setShape('sphere'); rebuild(); resize(); requestAnimationFrame(loop);
+window.__scapePreview={get hdr(){return hdr;},get webgl2(){return isWebGL2;}};
+})();
+</script>
+
+</body>
+</html>
